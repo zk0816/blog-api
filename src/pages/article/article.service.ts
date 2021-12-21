@@ -150,16 +150,6 @@ export class ArticleService {
     return _detail;
   }
 
-  //更新文章
-  async updateById(data): Promise<ArticleEntity> {
-    const _old = await this.articleRepository.findOne(data.id);
-    if (!_old) {
-      throw new HttpException('该文章不存在', 601);
-    }
-    const _new = this.articleRepository.merge(_old, data);
-    return this.articleRepository.save(_new);
-  }
-
   // 刪除文章
   async remove(params) {
     const existPost = await this.articleRepository.findOne(params.id);

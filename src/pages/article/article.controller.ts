@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  UseGuards,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { Page } from '@/common/common';
 import { ArticleEntity } from './entities/article.entity';
@@ -48,19 +40,6 @@ export class ArticleController {
   @Get('detail?')
   async findById(@Query() query) {
     return await this.articleService.findById(query);
-  }
-
-  /**
-   * 修改文章
-   * @param id
-   * @param post
-   */
-  @ApiOperation({ summary: '修改文章' })
-  @UseGuards(AuthGuard('jwt'))
-  @Post('update')
-  async update(@Body() data) {
-    await this.articleService.updateById(data);
-    return '修改成功！';
   }
 
   /**
