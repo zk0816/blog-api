@@ -16,7 +16,7 @@ export class CategoryService {
     const doc = await this.categoryRepository.findOne({
       where: { categoryName },
     });
-    if (doc) throw new HttpException('该分类已存在', 401);
+    if (doc) throw new HttpException('该分类已存在', 601);
     return await this.categoryRepository.save(props);
   }
 
@@ -34,7 +34,7 @@ export class CategoryService {
   async remove(params) {
     const existPost = await this.categoryRepository.findOne(params.categoryId);
     if (!existPost) {
-      throw new HttpException(`id为${params.categoryId}的分类不存在`, 401);
+      throw new HttpException(`id为${params.categoryId}的分类不存在`, 601);
     }
     return await this.categoryRepository.remove(existPost);
   }

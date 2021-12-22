@@ -20,6 +20,7 @@ export class TagEntity {
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
     select: false,
   })
   update_time: Date;

@@ -8,6 +8,7 @@ import envConfig from '../config/env';
 import { CategoryModule } from './pages/category/category.module';
 import { TagModule } from './pages/tag/tag.module';
 import { UserModule } from './pages/user/user.module';
+import { DraftModule } from './pages/draft/draft.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UserModule } from './pages/user/user.module';
     TagModule,
     CategoryModule,
     UserModule,
+    DraftModule,
   ],
   controllers: [AppController],
   providers: [AppService],
