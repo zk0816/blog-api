@@ -12,12 +12,17 @@ export class CategoryService {
 
   // 创建分类
   async create(props: Partial<CategoryEntity>): Promise<CategoryEntity> {
-    const { categoryName } = props;
+    const { categoryName, categoryId } = props;
+    let old;
+    if (categoryId) {
+      old = await this.categoryRepository.findOne(categoryId);
+    }
     const doc = await this.categoryRepository.findOne({
       where: { categoryName },
     });
     if (doc) throw new HttpException('该分类已存在', 601);
-    return await this.categoryRepository.save(props);
+    const _new = categoryId && this.categoryRepository.merge(old, props);
+    return await this.categoryRepository.save(categoryId ? _new : props);
   }
 
   //查看所有分类
