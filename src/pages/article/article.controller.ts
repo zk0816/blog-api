@@ -34,7 +34,7 @@ export class ArticleController {
 
   /**
    * 获取指定文章
-   * @param id
+   * @param artid
    */
   @ApiOperation({ summary: '获取指定文章' })
   @Get('detail?')

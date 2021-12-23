@@ -15,17 +15,17 @@ export class ArticleService {
 
   //创建/修改文章
   async create(post: CreateArticle): Promise<ArticleEntity> {
-    const { title, content, tagId, categoryId, id } = post;
+    const { title, content, tagId, categoryId, artid } = post;
     let _old;
-    if (id) {
-      _old = await this.articleRepository.findOne(id);
+    if (artid) {
+      _old = await this.articleRepository.findOne(artid);
     } else {
       if (!title) throw new HttpException('缺少文章标题', 400);
       if (!content) throw new HttpException('请填写文章内容', 400);
-      const doc = await this.articleRepository.findOne({ where: { title } });
-      if (doc) {
-        throw new HttpException('文章已存在', 601);
-      }
+      // const doc = await this.articleRepository.findOne({ where: { title } });
+      // if (doc) {
+      //   throw new HttpException('文章已存在', 601);
+      // }
     }
     //查分类表
     const { categoryName } = await getRepository(CategoryEntity)
@@ -50,8 +50,8 @@ export class ArticleService {
       tag: res.join(','),
       category: categoryName,
     };
-    const _new = this.articleRepository.merge(_old, _post);
-    return await this.articleRepository.save(id ? _new : _post);
+    const _new = artid && this.articleRepository.merge(_old, _post);
+    return await this.articleRepository.save(artid ? _new : _post);
   }
 
   //获取文章列表
@@ -133,11 +133,11 @@ export class ArticleService {
 
   // 获取指定文章
   async findById(query): Promise<ArticleEntity> {
-    const { id } = query;
+    const { artid } = query;
     const qb = await getRepository(ArticleEntity).createQueryBuilder('article');
     const detail = await qb
       .addSelect('article.update_time')
-      .where('article.id = :id', { id })
+      .where('article.artid = :artid', { artid })
       .getOne();
     console.log(detail);
     if (!detail) {
@@ -152,9 +152,9 @@ export class ArticleService {
 
   // 刪除文章
   async remove(params) {
-    const existPost = await this.articleRepository.findOne(params.id);
+    const existPost = await this.articleRepository.findOne(params.artid);
     if (!existPost) {
-      throw new HttpException(`id为${params.id}的文章不存在`, 601);
+      throw new HttpException(`artid为${params.artid}的文章不存在`, 601);
     }
     return await this.articleRepository.remove(existPost);
   }

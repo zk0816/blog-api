@@ -26,4 +26,15 @@ export class DraftController {
   async findAll(@Query() query: PageDto): Promise<Page<DraftEntity>> {
     return await this.draftService.findAllList(query);
   }
+
+  /**
+   * 删除
+   * @param id
+   */
+  @UseGuards(AuthGuard('jwt'))
+  @Post('delete')
+  async remove(@Body() params) {
+    await this.draftService.remove(params);
+    return '删除成功！';
+  }
 }

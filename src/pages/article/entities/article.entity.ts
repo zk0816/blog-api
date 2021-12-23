@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('article')
 export class ArticleEntity {
   @PrimaryGeneratedColumn()
-  id: number; // 标记为主列，值自动生成
+  artid: number; // 标记为主列，值自动生成
 
   //标题
   @Column({ length: 50 })
@@ -55,7 +55,7 @@ export class ArticleEntity {
 }
 
 export interface CreateArticle {
-  id?: number;
+  artid?: number;
   title: string;
   content: string;
   tagId: number[];

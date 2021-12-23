@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { TagEntity } from './entities/tag.entity';
+import { colorData } from '@/pages/tag/color/color';
 
 @Injectable()
 export class TagService {
@@ -16,8 +17,14 @@ export class TagService {
     const doc = await this.tagRepository.findOne({
       where: { tagName },
     });
-    if (doc) throw new HttpException('该标签已存在', 401);
-    return await this.tagRepository.save(props);
+    const len = colorData.length;
+    const _color = colorData[Math.floor(Math.random() * len)];
+    const data = {
+      ...props,
+      tagColor: _color,
+    };
+    if (doc) throw new HttpException('该标签已存在', 601);
+    return await this.tagRepository.save(data);
   }
 
   //查看所有标签
@@ -32,7 +39,7 @@ export class TagService {
   async remove(params) {
     const existPost = await this.tagRepository.findOne(params.tagId);
     if (!existPost) {
-      throw new HttpException(`id为${params.tagId}的标签不存在`, 401);
+      throw new HttpException(`id为${params.tagId}的标签不存在`, 601);
     }
     return await this.tagRepository.remove(existPost);
   }

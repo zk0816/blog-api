@@ -8,6 +8,9 @@ export class TagEntity {
   @Column({ default: '' })
   tagName: string;
 
+  @Column({ default: null })
+  tagColor: string;
+
   //创建时间
   @Column({
     type: 'timestamp',

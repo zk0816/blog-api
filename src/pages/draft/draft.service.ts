@@ -2,7 +2,7 @@ import { Page, PageParams } from '@/common/common';
 import { CategoryEntity } from '@/pages/category/entities/category.entity';
 import { DraftEntity } from '@/pages/draft/entities/draft.entity';
 import { TagEntity } from '@/pages/tag/entities/tag.entity';
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 
@@ -100,15 +100,18 @@ export class DraftService {
         })
         .getOne();
       //标签表
-      let _res = e.tag.split(',').map(async (v: any) => {
-        const res = await getRepository(TagEntity)
-          .createQueryBuilder('tag')
-          .where('tag.tagName = :tagName ', {
-            tagName: v,
-          })
-          .getOne();
-        return res;
-      });
+      let _res =
+        e.tag === ''
+          ? []
+          : e.tag.split(',').map(async (v: any) => {
+              const res = await getRepository(TagEntity)
+                .createQueryBuilder('tag')
+                .where('tag.tagName = :tagName ', {
+                  tagName: v,
+                })
+                .getOne();
+              return res;
+            });
       _res = await Promise.all(_res);
       return {
         ...e,
@@ -149,5 +152,14 @@ export class DraftService {
       previousPage,
       unit: '条',
     };
+  }
+
+  // 刪除草稿箱
+  async remove(params) {
+    const existPost = await this.draftRepository.findOne(params.id);
+    if (!existPost) {
+      throw new HttpException(`id为${params.id}的文章不存在`, 601);
+    }
+    return await this.draftRepository.remove(existPost);
   }
 }
