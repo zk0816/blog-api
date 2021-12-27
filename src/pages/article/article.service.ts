@@ -54,6 +54,11 @@ export class ArticleService {
     return await this.articleRepository.save(artid ? _new : _post);
   }
 
+  //更新文章
+  async updata(data: ArticleEntity): Promise<ArticleEntity> {
+    return await this.articleRepository.save(data);
+  }
+
   //获取文章列表
   async findAllList(query: PageParams): Promise<Page<ArticleEntity>> {
     const qb = await getRepository(ArticleEntity).createQueryBuilder('article');

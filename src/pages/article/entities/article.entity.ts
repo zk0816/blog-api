@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { CommentEntity } from '@/pages/comment/entities/comment.entity';
 
 @Entity('article')
 export class ArticleEntity {
@@ -33,8 +34,16 @@ export class ArticleEntity {
   @Column({ default: null })
   cover_url: string;
 
-  @Column({ type: 'tinyint', default: null })
-  type: number;
+  //文章游览次数
+  @Column({ default: 0 })
+  tour: number;
+
+  //文章点赞次数
+  @Column({ default: 0 })
+  like: number;
+
+  // @Column({ type: 'tinyint', default: null })
+  // type: number;
 
   //创建时间
   @Column({
@@ -52,6 +61,9 @@ export class ArticleEntity {
     select: false,
   })
   update_time: Date;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.article)
+  comments: CommentEntity[];
 }
 
 export interface CreateArticle {

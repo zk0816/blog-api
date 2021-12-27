@@ -9,6 +9,8 @@ import { CategoryModule } from './pages/category/category.module';
 import { TagModule } from './pages/tag/tag.module';
 import { UserModule } from './pages/user/user.module';
 import { DraftModule } from './pages/draft/draft.module';
+import { CommentModule } from './pages/comment/comment.module';
+import { ReplyModule } from './pages/reply/reply.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { DraftModule } from './pages/draft/draft.module';
     CategoryModule,
     UserModule,
     DraftModule,
+    CommentModule,
+    ReplyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
