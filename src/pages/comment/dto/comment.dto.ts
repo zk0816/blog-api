@@ -14,4 +14,6 @@ export class CommentDto {
   readonly artid: number;
 
   readonly commentAvatar?: string;
+
+  readonly message?: boolean;
 }

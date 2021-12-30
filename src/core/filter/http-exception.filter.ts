@@ -20,7 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const errorResponse = {
       data: null,
       message: codeMessage[status] || exception.message,
-      code: -1,
+      code: status || -1,
     };
 
     // 设置返回的状态码， 请求头，发送错误信息

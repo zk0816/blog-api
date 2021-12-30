@@ -29,6 +29,10 @@ export class CommentEntity {
   @Column({ length: 50 })
   commentContent: string;
 
+  //是否为留言板的评论
+  @Column({ default: false })
+  message: boolean;
+
   //创建时间
   @Column({
     type: 'timestamp',
@@ -46,9 +50,11 @@ export class CommentEntity {
   })
   update_time: Date;
 
+  //一条评论多条回复
   @OneToMany(() => ReplyEntity, (reply) => reply.comment)
   replys: ReplyEntity[];
 
+  //一篇文章多条评论
   @ManyToOne(() => ArticleEntity, (article) => article.comments)
   article: ArticleEntity;
 }

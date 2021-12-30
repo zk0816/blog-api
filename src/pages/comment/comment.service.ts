@@ -15,14 +15,25 @@ export class CommentService {
     private articleService?: ArticleService,
   ) {}
 
+  //文章评论，留言评论
   async create(params: CommentDto) {
-    const { artid, commentName, commentEmail, commentContent, commentAvatar } =
-      params;
-    // //查询名称是否重复
-    // const doc = await this.commentRepository.findOne({
-    //   where: { commentName },
-    // });
-    // if (doc) throw new HttpException('该昵称已存在', 601);
+    const {
+      artid,
+      commentName,
+      commentEmail,
+      commentContent,
+      commentAvatar,
+      message,
+    } = params;
+
+    if (message) {
+      await this.commentRepository.save(params);
+      return '留言成功';
+    }
+
+    if (!artid) {
+      throw new HttpException('缺少文章id', 602);
+    }
 
     const qb = await getRepository(ArticleEntity).createQueryBuilder('article');
     const detail = await qb
