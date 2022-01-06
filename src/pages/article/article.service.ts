@@ -5,6 +5,7 @@ import { getRepository, Repository } from 'typeorm';
 import { ArticleEntity, CreateArticle } from './entities/article.entity';
 import { Page, PageParams } from '@/common/common';
 import { TagEntity } from '@/pages/tag/entities/tag.entity';
+import { CommentEntity } from '@/pages/comment/entities/comment.entity';
 
 @Injectable()
 export class ArticleService {
@@ -77,6 +78,13 @@ export class ArticleService {
     let _data = JSON.parse(
       JSON.stringify(data).replace(/update_time/g, 'time'),
     ).map(async (e: any) => {
+      //查询评论数
+      const comment = await getRepository(CommentEntity)
+        .createQueryBuilder('comment')
+        .where('comment.articleArtid = :articleArtid', {
+          articleArtid: e.artid,
+        })
+        .getMany();
       //查分类表
       const category = await getRepository(CategoryEntity)
         .createQueryBuilder('category')
@@ -100,6 +108,7 @@ export class ArticleService {
         category: { ...category },
         tag: _res,
         time: new Date(e.time).valueOf(),
+        comment: comment.length,
       };
     });
     _data = await Promise.all(_data);

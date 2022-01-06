@@ -42,6 +42,10 @@ export class ArticleEntity {
   @Column({ default: 0 })
   like: number;
 
+  //文章评论次数
+  @Column({ default: 0 })
+  comment: number;
+
   // @Column({ type: 'tinyint', default: null })
   // type: number;
 
