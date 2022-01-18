@@ -10,7 +10,7 @@ export class DraftEntity {
   title: string;
 
   //文章内容
-  @Column({ default: null })
+  @Column({ default: null, type: 'longtext' })
   content: string;
 
   //文章分类

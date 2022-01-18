@@ -15,7 +15,7 @@ export class ArticleEntity {
   // author: string;
 
   //文章内容
-  @Column('text')
+  @Column({ type: 'longtext' })
   content: string;
 
   //文章分类
