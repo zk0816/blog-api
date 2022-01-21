@@ -6,20 +6,20 @@ export class ReplyEntity {
   @PrimaryGeneratedColumn()
   replyId: number; // 标记为主列，值自动生成
 
-  //评论人名字
+  //回复人名字
   @Column({ length: 10 })
   replyName: string;
 
-  //评论人头像
+  //回复人头像
   @Column({ default: '' })
   replyAvatar: string;
 
-  //评论人邮箱
+  //回复人邮箱
   @Column()
   replyEmail: string;
 
-  //评论内容
-  @Column({ length: 50 })
+  //回复内容
+  @Column({ type: 'longtext' })
   replyContent: string;
 
   //创建时间

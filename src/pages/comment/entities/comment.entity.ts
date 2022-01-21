@@ -26,7 +26,7 @@ export class CommentEntity {
   commentEmail: string;
 
   //评论内容
-  @Column({ length: 50 })
+  @Column({ type: 'longtext' })
   commentContent: string;
 
   //是否为留言板的评论
