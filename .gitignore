@@ -20,6 +20,8 @@ lerna-debug.log*
 
 # IDEs and editors
 /.idea
+yarn.lock
+package-lock.json
 .project
 .classpath
 .c9/
@@ -33,3 +35,4 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+

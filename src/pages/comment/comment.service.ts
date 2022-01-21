@@ -1,3 +1,4 @@
+import { ReplyEntity } from './../reply/entities/reply.entity';
 import { ArticleService } from './../article/article.service';
 import { ArticleEntity } from '@/pages/article/entities/article.entity';
 import { CommentEntity } from '@/pages/comment/entities/comment.entity';
@@ -58,6 +59,31 @@ export class CommentService {
     };
     await this.articleService.updata(_newdetail);
     return '评论成功';
+  }
+
+  //根据文章id查询评论列表及回复
+  async select(query: any) {
+    const { artid } = query;
+    const comment = await getRepository(CommentEntity)
+      .createQueryBuilder('comment')
+      .where('comment.articleArtid = :articleArtid', {
+        articleArtid: artid,
+      })
+      .getMany();
+    const _comment = comment.map(async (e: CommentEntity) => {
+      const _replys = await getRepository(ReplyEntity)
+        .createQueryBuilder('reply')
+        .where('reply.commentCommentId = :commentCommentId', {
+          commentCommentId: e.commentId,
+        })
+        .getMany();
+      return {
+        ...e,
+        replys: _replys,
+      };
+    });
+    const data = await Promise.all(_comment);
+    return data;
   }
 
   //更新评论
