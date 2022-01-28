@@ -1,11 +1,12 @@
 import { CategoryEntity } from 'src/pages/category/entities/category.entity';
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Like, Repository } from 'typeorm';
 import { ArticleEntity, CreateArticle } from './entities/article.entity';
 import { Page, PageParams } from '@/common/common';
 import { TagEntity } from '@/pages/tag/entities/tag.entity';
 import { CommentEntity } from '@/pages/comment/entities/comment.entity';
+import { Article } from '@/pages/article/interface';
 
 @Injectable()
 export class ArticleService {
@@ -61,7 +62,9 @@ export class ArticleService {
   }
 
   //获取文章列表
-  async findAllList(query: PageParams): Promise<Page<ArticleEntity>> {
+  async findAllList(
+    query: Article.ArticlePageParams,
+  ): Promise<Page<ArticleEntity>> {
     const qb = await getRepository(ArticleEntity).createQueryBuilder('article');
     qb.where('1 = 1');
     qb.orderBy('article.create_time', 'DESC');
@@ -72,6 +75,52 @@ export class ArticleService {
     pageSize = Number(pageSize);
     qb.take(pageSize);
     qb.skip(pageSize * (current - 1));
+
+    //分类查询
+    const { categoryId, tagId } = query;
+    if (categoryId && !tagId) {
+      const category = await getRepository(CategoryEntity)
+        .createQueryBuilder('category')
+        .where('category.categoryId = :categoryId ', {
+          categoryId,
+        })
+        .getOne();
+      qb.where('article.category like :category', {
+        category: `%${category.categoryName}%`,
+      });
+      console.log('dsadada', qb);
+    }
+    if (tagId && !categoryId) {
+      const tag = await getRepository(TagEntity)
+        .createQueryBuilder('tag')
+        .where('tag.tagId = :tagId', {
+          tagId,
+        })
+        .getOne();
+      qb.where('article.tag like :tag', {
+        tag: `%${tag.tagName}%`,
+      });
+    }
+    if (tagId && categoryId) {
+      const category = await getRepository(CategoryEntity)
+        .createQueryBuilder('category')
+        .where('category.categoryId = :categoryId ', {
+          categoryId,
+        })
+        .getOne();
+      const tag = await getRepository(TagEntity)
+        .createQueryBuilder('tag')
+        .where('tag.tagId = :tagId', {
+          tagId,
+        })
+        .getOne();
+      qb.where('article.tag like :tag', {
+        tag: `%${tag.tagName}%`,
+      }).andWhere('article.category like :category', {
+        category: `%${category.categoryName}%`,
+      });
+    }
+
     //当前页数据
     const data = await qb.addSelect('article.update_time').getMany();
     //替换掉updata_time 属性
@@ -112,6 +161,7 @@ export class ArticleService {
       };
     });
     _data = await Promise.all(_data);
+
     //当前页条数
     const pageCount = data.length;
     //总页数

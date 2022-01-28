@@ -56,6 +56,7 @@ export class CommentService {
     const _newdetail = {
       ...detail,
       comments: _commnets,
+      comment: _commnets.length,
     };
     await this.articleService.updata(_newdetail);
     return '评论成功';
