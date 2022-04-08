@@ -68,16 +68,19 @@ export class ArticleService {
     const qb = await getRepository(ArticleEntity).createQueryBuilder('article');
     qb.where('1 = 1');
     qb.orderBy('article.create_time', 'DESC');
-    //总条数
-    const total = await qb.getCount();
     let { current = 1, pageSize = 10 } = query;
     current = Number(current);
     pageSize = Number(pageSize);
     qb.take(pageSize);
     qb.skip(pageSize * (current - 1));
 
-    //分类查询
-    const { categoryId, tagId } = query;
+    //查询
+    const { categoryId, tagId, keywords } = query;
+    if (keywords) {
+      qb.where('article.title like :title', {
+        title: `%${keywords}%`,
+      });
+    }
     if (categoryId && !tagId) {
       const category = await getRepository(CategoryEntity)
         .createQueryBuilder('category')
@@ -88,7 +91,6 @@ export class ArticleService {
       qb.where('article.category like :category', {
         category: `%${category.categoryName}%`,
       });
-      console.log('dsadada', qb);
     }
     if (tagId && !categoryId) {
       const tag = await getRepository(TagEntity)
@@ -162,6 +164,8 @@ export class ArticleService {
     });
     _data = await Promise.all(_data);
 
+    //总条数
+    const total = await qb.getCount();
     //当前页条数
     const pageCount = data.length;
     //总页数
